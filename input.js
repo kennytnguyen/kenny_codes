@@ -39,6 +39,7 @@ const axios = require ('axios');
 const fs = require('fs');
 const { connect } = require('http2');
 const { throwError } = require('rxjs');
+const { parse } = require('path');
 
 
 inquireUser();
@@ -99,6 +100,12 @@ async function connectGit(userName, userToken) {
 
     const repoData = getRepos.data;
 
+/*     Converter.json2csv(repoData, (err, csv) => {
+        if (err) {
+            throw err;
+        }
+        console.log(csv);
+    }) */
     var repoInfo = new Array();
 
     repoData.forEach(element => {
@@ -135,10 +142,15 @@ async function connectGit(userName, userToken) {
 
        Now we can get into pulling the commits
     */
+
+
+
 }
 
 async function processCommits(repoInfo, userName, userToken) {
     console.log('Starting Commits Pull, Reading from Repos Info');
+
+    console.log(repoInfo[0].commit_url);
 
     /* Lets try using a different way to authenticate / using Axios */
 
@@ -150,6 +162,8 @@ async function processCommits(repoInfo, userName, userToken) {
         /* Track pageNumber because limits at 30 */
 
         /* Use page parameter to retrieve all commits */
+
+        /* console.log(commit_url); */
 
         while(true){
             let response = await axios({
@@ -163,7 +177,7 @@ async function processCommits(repoInfo, userName, userToken) {
                     }
             })
             .then(function (result) {
-                console.log(result);
+                console.log('Pulling Commit Data (In-Progress)');
                 return result;
             })
             .catch(function (result) {
@@ -171,17 +185,23 @@ async function processCommits(repoInfo, userName, userToken) {
                 console.log(result);
             });
 
-            /* https://docs.github.com/en/rest/reference/repos#get-a-commit */
-            const parseCommit = response.data;
-            parseCommit.forEach(element => {
+            const parseInfo = response.data;
+
+            parseInfo.forEach(element => {
                 var data = {
                     id: element.node_id,
                     sha: element.sha,
                     date: element.commit.committer.date,
                     committer: element.commit.committer.name,
-                    messaage: element.commit.message
+                    message: element.commit.message
+                };
+
+                /* In case it's a shared repo, only check for unique user */
+                if(element.author.login == userName){
+                    commitsInfo.push(data);
+                } else {
+                    continue;
                 }
-                commitsInfo.push(data);
             });
             if(response.length == 30){
                 pageNumber = pageNumber + 1;
@@ -197,7 +217,7 @@ async function processCommits(repoInfo, userName, userToken) {
         if (err) {
             throw err;
         }
-        console.log('Writing Commit List to CSV');
+        console.log('Commit Data Pull Complete -> Now Writing Repo List to CSV');
         fs.writeFileSync('commitsInfo.csv',csv);
     })
 }
