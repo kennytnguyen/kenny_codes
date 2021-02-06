@@ -247,7 +247,7 @@ async function processCommits(repoInfo, userName, userToken, name) {
                 break;
             }
         }
-        createCSV(commitsInfo, 'Repo Number ' + i + ' and its commits');
+        createCSV(commitsInfo, 'commitsInfo');
     }
 
 
@@ -266,7 +266,7 @@ async function processCommits(repoInfo, userName, userToken, name) {
     while (recentCommitsFinal.length > 60){
         recentCommitsFinal.pop();
     }
-    createCSV(recentCommitsFinal, 'recentCommitsFinal');
+    createCSV(recentCommitsFinal, 'FINAL_OUTPUT');
 
 
 
