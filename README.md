@@ -27,10 +27,10 @@ After generating a token and having the username handy, we can run the program b
 
 It will prompt the user for their userName and Token. None of this is stored outside of the program. The program will run, write to 4 CSVs for step-wise interrogation for users to understand their data at every step of the way. This is how we manage "signals" at my current company (aside from adding on versioning and 'POR' signals).
 
-Checklist
+Added in time estimates for both (re-reading, researching, implementation, and MVP functionality tests)
+
+Checklist - MVP (~7 hours)
    
-   MVP (~7 hours)
-    
         [x] Create CLI requirement to ask for User Credentials (20 minutes)
         [x] Set up API to talk to and authenticate with GitHub (1 hour)
         [x] Pull any set of data then filter later (~2 hours)
@@ -43,15 +43,24 @@ Checklist
         [x] Calcuate average time between commits (30 minutes)
         [x] Create README on how to run (20 minutes)
 
+    Edge Cases Found
+        [] Private vs. Public Repos
+        [] Users may change their name
+        [] One commit may have two different IDs since it pushes to two seperate repos
+
     Nice-to-Haves
         [] Add validations (~2-3 hours)
             [] Is this a proper email
             [] Sorry your info is wrong
+            
+        [] Improve Testing Environment
+            [] Store mock data or repo data to be re-used / versioned
+            [] Limit number of pulls to github
 
-        [] Error Handling
+        [] Error Handling (~2 hours)
             [] Process and catch errors better
 
-        [] Security
+        [] Security (~2 hours)
             [x] don't store the data outside of the program
             [] create an 'ENV'
 
@@ -61,5 +70,8 @@ Checklist
             [] Seperate functions
             [] Handle and manage async functions more cleanly
             [] Less spaghetti-ish code
+            [] remove forced functions (e.g. parseFloat)
+            [] Manage data-states better
+            [] Break out of loops, be more dynamic
 
         [] Use less external libraries?
