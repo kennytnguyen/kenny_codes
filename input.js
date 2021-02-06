@@ -218,7 +218,7 @@ async function processCommits(repoInfo, userName, userToken, name) {
                     }
             })
             .then(function (result) {
-                console.log('Pulling Commit Data (In-Progress) for Repo Index: '+ i);
+                /* console.log('Pulling Commit Data (In-Progress) for Repo Index: '+ i); */
                 return result;
             })
             .catch(function (result) {
@@ -247,7 +247,7 @@ async function processCommits(repoInfo, userName, userToken, name) {
                 break;
             }
         }
-        createCSV(commitsInfo, 'commitsInfo');
+        createCSV(commitsInfo, 'Repo Number ' + i + ' and its commits');
     }
 
 
@@ -257,7 +257,7 @@ async function processCommits(repoInfo, userName, userToken, name) {
     createCSV(sortedCommitsByDate, 'sortedCommitsByDate');
 
     /* Get rid of external committers that aren't the user */
-    console.log('Filtering by User' + name);
+    console.log('Filtering by User: ' + name);
     const filteredCommitsByUser = _.filter(sortedCommitsByDate, {'committer': name.toString()});
     createCSV(filteredCommitsByUser, 'filteredCommitsByUser');
 
@@ -269,26 +269,39 @@ async function processCommits(repoInfo, userName, userToken, name) {
     createCSV(recentCommitsFinal, 'recentCommitsFinal');
 
 
+
+    /* Calculate Time */
     var timeBetweenCommits = new Array();
     var j;
-
+    var total_time = 0;
     for (j = 0; j < (recentCommitsFinal.length-1); j++){
         var start = new Date(recentCommitsFinal[j].date);
         var end = new Date(recentCommitsFinal[j+1].date);
 
         /* ms to minutes */
-        var distance = ((start - end) / (1000*60));
-        console.log(distance);
-        timeBetweenCommits.push(distance);
+        var distance = parseFloat(((start - end) / (1000*60)).toFixed(2));
+        total_time += parseFloat(distance);
+        timeBetweenCommits.push(parseFloat(distance));
     }
+    /* console.log('Total Time: ' + total_time); */
+    var average = parseFloat(total_time/timeBetweenCommits.length);
+    /* console.log('Average: ' + average); */
 
-    var total_time;
+    var d = Math.floor(average / 1440); // 60*24
+    var h = Math.floor((average - (d * 1440)) / 60);
+    var m = Math.round(average % 60);
+
+    console.log('The mean time between commits is: ');
+    console.log(d + " days, " + h + " hours, " + m + " minutes.");
+
+    /* var total_time;
     var k;
     for (k = 0; k < timeBetweenCommits.length; k++){
-        total_time += timeBetweenCommits[k]
+        console.log(timeBetweenCommits[k]);
+        total_time += timeBetweenCommits[k];
     }
+ */
 
-    console.log('Average Time: ' + total_time/timeBetweenCommits.length);
 
 
 
@@ -331,11 +344,7 @@ function createCSV(obj, name) {
         if (err) {
             throw err;
         }
-        console.log('Commit Data Pull Complete -> Writing ' + name + ' to CSV');
+        console.log('Writing ' + name + ' to CSV');
         fs.writeFileSync(name + '.csv',csv);
     })
-}
-
-function calculateAverageTime(obj) {
-
 }
