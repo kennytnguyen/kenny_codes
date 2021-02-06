@@ -28,7 +28,9 @@ After generating a token and having the username handy, we can run the program b
 It will prompt the user for their userName and Token. None of this is stored outside of the program. The program will run, write to 4 CSVs for step-wise interrogation for users to understand their data at every step of the way. This is how we manage "signals" at my current company (aside from adding on versioning and 'POR' signals).
 
 Checklist
-    MVP (~7 hours)
+   
+   MVP (~7 hours)
+    
         [x] Create CLI requirement to ask for User Credentials (20 minutes)
         [x] Set up API to talk to and authenticate with GitHub (1 hour)
         [x] Pull any set of data then filter later (~2 hours)
